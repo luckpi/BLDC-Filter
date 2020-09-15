@@ -1,5 +1,5 @@
 {
-    "name": "无感筋膜枪",
+    "name": "BLDC-Halless-Majority Function",
     "type": "C51",
     "mode": "Release",
     "toolchain": "Keil_C51",
