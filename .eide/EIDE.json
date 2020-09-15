@@ -52,7 +52,7 @@
     "excludeList": [],
     "outDir": ".\\out",
     "uploadConfig": {
-        "bin": ".\\out\\Release\\无感筋膜枪.hex",
+        "bin": ".\\out\\Release\\BLDC-Halless-Majority Function.hex",
         "eepromImgPath": "null",
         "options": "./.EIDE/stc.flash.json"
     }
