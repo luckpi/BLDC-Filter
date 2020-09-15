@@ -208,5 +208,4 @@ extern void PWMSwitchPhase();
 extern void PWMChangeDuty(u16 u16data);
 extern void PWMPortBrake();
 extern void PWMSwitchPhase();
-extern void halless_to_phase();
 #endif

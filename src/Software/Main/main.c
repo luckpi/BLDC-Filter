@@ -33,7 +33,7 @@ void main()
             if (ADCSample.Voltage)
                 Protect_Voltage();
             // Ps("BAT=", ADCSample.Voltage);
-            Ps("adc=", ADCSample.Average);
+            // Ps("Current = ", ADCSample.Average);
             Protect_Current();
             break;
         default:

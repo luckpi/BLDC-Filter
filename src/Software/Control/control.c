@@ -58,8 +58,6 @@ static void MotorAlign()
     // PWMPortShut();
     // Delay_us(50);
     IPD();
-    // Halless.HallessState = IPD(); //获取初始相位
-    // halless_to_phase();           //相位转换
     PWMOutput();
     SFRPAGE = 0x02; // 中断标志清零
     EXINTCON = 0x00;
@@ -72,7 +70,7 @@ static void MotorAlign()
 
 /*****************************************************************************
  函 数 名  : StartupDrag
- 功能描述  : 启动
+ 功能描述  : 启动，边强拖，边检测
  输入参数  : 无
  输出参数  : void
 *****************************************************************************/
@@ -99,7 +97,7 @@ void StartupDrag()
         ADC_CNT = 0;
         CNT = 0;
         HoldParm.DragTime -= ((HoldParm.DragTime / 15) + 1);
-        if (HoldParm.DragTime <175)
+        if (HoldParm.DragTime < 175)
         {
             HoldParm.DragTime = 175;
         }
@@ -136,7 +134,7 @@ void EnterRunInit()
 }
 /*****************************************************************************
  函 数 名  : MotorRun
- 功能描述  : 运行
+ 功能描述  : PID调速
  输入参数  : 无
  输出参数  : void
 *****************************************************************************/

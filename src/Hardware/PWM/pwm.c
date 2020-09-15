@@ -15,7 +15,7 @@ void PWM_Init()
 	TIM0_PHASEL = 0x00;
 	TIM0_CONR0 = 0x90; // CCPE
 	TIM0_CONR2 = 0x05; // 打开TIM0_ARR寄存器预装载功能，中央对齐模式2，计数器向上计数使更新输出通道的输出比较中断标志位
-	TIM0_CONR3 = 0x02; // 上溢不产生更新事件，不产生更新中断，下溢产生更新事件，不产生更新中断
+	TIM0_CONR3 = 0x02; // 上溢产生更新事件，不产生更新中断，下溢不产生更新事件，不产生更新中断
 	TIM0_CC0MR = 0x68; // PWM0模式1
 					   // 中央对齐计数模式下：向上计数时，若TIM0_CNT < TIM0_CC0R，OC0REF为有效电平（ OC0REF=1），否则为无效电平（ OC0REF=0）
 					   // 向下计数时，若 TIM0_CNT > TIM0_CC0R，OC0REF 为无效电平（OC0REF=0），否则为有效电平（OC0REF=1）
@@ -115,61 +115,6 @@ void PWMPortShut()
 	PA6CTRL = BIT1; // VH PWM0_CH1N
 }
 
-void halless_to_phase()
-{
-	if (HoldParm.RotorDirection == CW)
-	{
-		switch (Halless.HallessState)
-		{
-		case 5:
-			Halless.Phase = 5;
-			break;
-		case 1:
-			Halless.Phase = 4;
-			break;
-		case 3:
-			Halless.Phase = 3;
-			break;
-		case 2:
-			Halless.Phase = 2;
-			break;
-		case 6:
-			Halless.Phase = 1;
-			break;
-		case 4:
-			Halless.Phase = 0;
-			break;
-		default:
-			break;
-		}
-	}
-	else if (HoldParm.RotorDirection == CCW)
-	{
-		switch (Halless.HallessState)
-		{
-		case 5:
-			Halless.Phase = 0;
-			break;
-		case 1:
-			Halless.Phase = 1;
-			break;
-		case 3:
-			Halless.Phase = 2;
-			break;
-		case 2:
-			Halless.Phase = 3;
-			break;
-		case 6:
-			Halless.Phase = 4;
-			break;
-		case 4:
-			Halless.Phase = 5;
-			break;
-		default:
-			break;
-		}
-	}
-}
 /*****************************************************************************
  函 数 名  : PWMSwitchPhase
  功能描述  : PWM0换相函数[CW:AB-AC-BC-BA-CA-CB	CCW:AB-CB-CA-BA-BC-AC]

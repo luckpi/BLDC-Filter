@@ -55,8 +55,6 @@ void Common_Init()
     ADCSample.NeutralPoint = 0; // 反电动势中性点
     ADCSample.Sum = 0;
     ADCSample.Num = 0;
-    ADCSample.BackEMFFilter = 0;
-    ADCSample.ComparatorOutputs = 0;
     ADCSample.ChlState = CHL_UBemf;
     CatchParm.Period = 0;
     CatchParm.Duty = 0;
@@ -69,6 +67,6 @@ void Common_Init()
     Halless.delay_time = 0;
     Halless.zero_flag = 0;
     Halless.Filter_Count = 0;
-    Halless.Filter_Cnt = 3;
+    Halless.Filter_Times = 3;
     PID_init();
 }

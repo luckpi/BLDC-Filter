@@ -6,11 +6,13 @@
 #include "adc.h"
 #include "control.h"
 /*AND & OR operators for masking the active BEMF signal*/
+/*与运算只获取当前要检测反电动势的状态， 通过异或检测当前反电动势变化情况*/
 const u8 xdata ADC_MASK[16] = {0x00, 0x04, 0x02, 0x01, 0x04, 0x02, 0x01, 0x00,  //正转
                                0x00, 0x04, 0x01, 0x02, 0x04, 0x01, 0x02, 0x00}; //反转
 const u8 xdata ADC_XOR[16] = {0x00, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00,   //正转
                               0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0x00};  //反转
 /*BEMF Majority Function Filter values*/
+/*通过检测多次，当捕获到三个反电动势边沿变化中，有两个有效信号则滤波完成*/
 const u8 xdata ADC_BEMF_FILTER[64] =
     // 0    1    2    3      4     5     6     7     8     9     10    11    12    13    14    15
     {0x00, 0x02, 0x04, 0x06, 0x08, 0x0A, 0x0C, 0x0E, 0x10, 0x12, 0x14, 0x16, 0x18, 0x1A, 0x1C, 0x1E,
@@ -41,13 +43,18 @@ static void CalcAvgSpeedTime()
         HoldParm.RPM = SPEEDFACTOR / HoldParm.SpeedTimeTemp;
     }
 }
-
+/*****************************************************************************
+ 函 数 名  : CalcSpeedTime
+ 功能描述  : 获取换相间隔
+ 输入参数  : 无
+ 输出参数  : void
+*****************************************************************************/
 static void CalcSpeedTime()
 {
     SFRPAGE = 0x00;
-    HoldParm.SpeedTimeTemp = (TH0 << 8) + TL0;
+    HoldParm.SpeedTimeTemp = (TH0 << 8) + TL0; // 获取换相间隔时间
     TIMER0_RESET;
-    if (Halless.Filter_Count <= 6 && mcState == mcRun) //堵转检测
+    if (Halless.Filter_Count <= 6 && mcState == mcRun) // 堵转检测
     {
         if (++HoldParm.MainDetectCnt >= 50)
         {
@@ -58,37 +65,45 @@ static void CalcSpeedTime()
     {
         HoldParm.MainDetectCnt = 0;
     }
-    Halless.delay_time = 65535 - (HoldParm.SpeedTimeTemp >> 1 - 100);
+    Halless.delay_time = 65535 - (HoldParm.SpeedTimeTemp >> 1 - 100); // 换相延迟
     TH2 = Halless.delay_time >> 8;
     TL2 = Halless.delay_time & 0xff;
     Halless.Filter_Count = 0;
-    ADCSample.BackEMFFilter = 0;
+    Halless.BackEMFFilter = 0;
     Halless.zero_flag = 1;
     CalcAvgSpeedTime();
 }
+/*****************************************************************************
+ 函 数 名  : CheckZeroCrossing
+ 功能描述  : 过零点检测，采用择多滤波，在PWM高电平中间进行检测
+ 输入参数  : 无
+ 输出参数  : void
+*****************************************************************************/
 void CheckZeroCrossing()
 {
     u8 Num = 0;
-    if (++Halless.Filter_Count >= Halless.Filter_Cnt)
+    if (++Halless.Filter_Count >= Halless.Filter_Times)
     {
-        ADCSample.ComparatorOutputs = 0;
-        ADCSample.NeutralPoint = (ADCSample.UBemf + ADCSample.VBemf + ADCSample.WBemf) / 3;
-        if (ADCSample.UBemf > ADCSample.NeutralPoint)
-            ADCSample.ComparatorOutputs |= 0x01;
-        if (ADCSample.VBemf > ADCSample.NeutralPoint)
-            ADCSample.ComparatorOutputs |= 0x02;
-        if (ADCSample.WBemf > ADCSample.NeutralPoint)
-            ADCSample.ComparatorOutputs |= 0x04;
-        if (HoldParm.RotorDirection == CW)
+        Halless.HallessState = 0;
+        ADCSample.NeutralPoint = (ADCSample.UBemf + ADCSample.VBemf + ADCSample.WBemf) / 3; // 反电动势虚拟中心点
+
+        if (ADCSample.UBemf > ADCSample.NeutralPoint) // U相输出
+            Halless.HallessState |= 0x01;
+        if (ADCSample.VBemf > ADCSample.NeutralPoint) // V相输出
+            Halless.HallessState |= 0x02;
+        if (ADCSample.WBemf > ADCSample.NeutralPoint) // W相输出
+            Halless.HallessState |= 0x04;
+        if (HoldParm.RotorDirection == CW) // 切换正反转处理
             Num = Halless.Phase;
         else
             Num = Halless.Phase + 8;
-        if ((ADCSample.ComparatorOutputs ^ ADC_XOR[Num]) & ADC_MASK[Num])
+
+        if ((Halless.HallessState ^ ADC_XOR[Num]) & ADC_MASK[Num]) // 获取当前要检测反电动势变化
         {
-            ADCSample.BackEMFFilter |= 0x01;
+            Halless.BackEMFFilter |= 0x01;
         }
-        ADCSample.BackEMFFilter = ADC_BEMF_FILTER[ADCSample.BackEMFFilter];
-        if (ADCSample.BackEMFFilter & 0x01)
+        Halless.BackEMFFilter = ADC_BEMF_FILTER[Halless.BackEMFFilter]; // 择多函数滤波
+        if (Halless.BackEMFFilter & 0x01)
         {
             if (++Halless.Phase > 6)
             {
@@ -155,7 +170,7 @@ static void ADCAnalogSample()
  输入参数  : 无
  输出参数  : void
 *****************************************************************************/
-void ADC_ISR() ADC_IR_Num
+void ADC_ISR() ADC_ISR_Num
 {
     volatile u16 u16Temp = 0;
     ADC_IF_CLEAR;

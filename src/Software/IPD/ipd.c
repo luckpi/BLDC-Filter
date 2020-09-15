@@ -4,15 +4,7 @@
 #include "pwm.h"
 #include "adc.h"
 #include "uart.h"
-void ADC_PGA()
-{
-	SFRPAGE = 0x00;
-	ADCCON0 &= BIT6F;
-	ADCCON0 |= BIT7;
-	while (!(ADCCON0 & BIT6))
-		;
-}
-void discharge(void) //放电
+static void discharge(void) // 放电
 {
 	GPIO_UH_N;
 	GPIO_VH_N;
@@ -22,7 +14,7 @@ void discharge(void) //放电
 	GPIO_WL_N;
 	Delay_us(200);
 }
-void position()
+static void position() // 获取位置失败，强行定位
 {
 	HoldParm.PWMDutyCycle = PWM_START_DUTY;
 	PWMChangeDuty(HoldParm.PWMDutyCycle);
@@ -32,13 +24,19 @@ void position()
 	PWMPortShut();
 	Delay_us(50);
 }
+/*****************************************************************************
+ 函 数 名  : IPD
+ 功能描述  : 通过依次导通上下管，获取初始转子位置，对电机凸极性有要求
+ 输入参数  : 无
+ 输出参数  : void
+*****************************************************************************/
 void IPD()
 {
 	u16 U1, U2, V1, V2, W1, W2, U_edge = 0, V_edge = 0, W_edge = 0, time = 100;
 	u8 UVW = 0;
 	SFRPAGE = 0x00;
 	ADCCON0 = 0x10; // 打开ADC，单次模式，不启动ADC转换
-	ADCCON0 &= 0xf0; 
+	ADCCON0 &= 0xf0;
 	ADCPGAC = 0x13;
 	do
 	{

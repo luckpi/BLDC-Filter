@@ -6,18 +6,18 @@
 #define First_Gear 1000  // 一档
 #define Second_Gear 2000 // 二档
 #define Third_Gear 2400  // 三档
-// #define Filter_Cnt 5
+
 // 控制顺序
 typedef enum
 {
     mcStop = 0, // 电机停止工作
-    mcAhead,
-    mcInit,
-    mcAlign,
-    mcDrag,
-    mcRun,
-    mcReset,
-    mcFault, // 电机重启
+    mcAhead,    // 启动检测
+    mcInit,     // 启动初始化
+    mcAlign,    // 定位
+    mcDrag,     // 强拖启动
+    mcRun,      // 进入闭环
+    mcReset,    // 重置
+    mcFault,    // 电机重启
 } MotorState_T;
 
 // 打印错误信息
@@ -52,23 +52,19 @@ typedef struct
 // ADC相关
 typedef struct
 {
-    u8 ChlState;          // 通道状态
-    u8 ComparatorOutputs; // 比较输出
-    u8 BackEMFFilter;     // 反电动势滤波
-    u8 ZeroChl;           // 过零点通道
-    u8 ZeroBemf;          // 过零点反电动势
-    u16 CurrentOffset;    // 电流放大零点
-    u16 Voltage;          // 电压采样值
-    u16 Current;          // 电流采样值
-    u16 UBemf;            // 反电动势U相
-    u16 VBemf;            // 反电动势V相
-    u16 WBemf;            // 反电动势W相
-    u16 NeutralPoint;     // 反电动势中性点
-    u32 Sum;              // 电流平均值和
-    u8 Num;               // 电流平均值计数
-    u16 Average;          // 电流平均值
-    u8 OverVoltageCnt;    // 过压次数
-    u8 OverCurrentCnt;    // 过流次数
+    u8 ChlState;       // 通道状态
+    u16 CurrentOffset; // 电流放大零点
+    u16 Voltage;       // 电压采样值
+    u16 Current;       // 电流采样值
+    u16 UBemf;         // 反电动势U相
+    u16 VBemf;         // 反电动势V相
+    u16 WBemf;         // 反电动势W相
+    u16 NeutralPoint;  // 反电动势中性点
+    u32 Sum;           // 电流平均值和
+    u8 Num;            // 电流平均值计数
+    u16 Average;       // 电流平均值
+    u8 OverVoltageCnt; // 过压次数
+    u8 OverCurrentCnt; // 过流次数
 } ADCSamplePara_T;
 
 // PWM捕获相关
@@ -78,19 +74,20 @@ typedef struct
     u16 Duty;        // 电平时间
     u16 PwmCnt;      // PWM信号滤波
     u8 DutyCycleUse; // 占空比
-    u8 Flag_Cap_Valid;
+    u8 Flag_Cap_Valid : 1;
 } PWMCatchPara_T;
 
 typedef struct
 {
-    u8 HallessState : 4;
-    u8 LastHallessState : 4;
-    u8 Phase : 3;
-    u8 LastPhase : 3;
-    u8 zero_flag : 1;
-    u8 Filter_Count;
-    u8 Filter_Cnt;
-    u16 delay_time;
+    u8 HallessState : 3;     // 反电动势输出
+    u8 LastHallessState : 3; //上一次反电动势输出
+    u8 BackEMFFilter;        // 反电动势滤波
+    u8 Phase : 3;            // 当前相位
+    u8 LastPhase : 3;        // 上一个相位
+    u8 zero_flag : 1;        // 过零点标识位
+    u8 Filter_Count;         // 滤波计数
+    u8 Filter_Times;         // 滤波次数
+    u16 delay_time;          // 延时换相时间
 } SensorPara_T;
 extern volatile SensorPara_T xdata Halless;
 

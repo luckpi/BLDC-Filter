@@ -187,17 +187,17 @@ typedef signed long s32;
         SFRPAGE = 0x00;  \
         ADCCON0 &= 0xf0; \
     } // ADC中断
-#define EXINT_IR_Num interrupt 0
-#define TIMER0_IR_Num interrupt 1
-#define TIMER1_IR_Num interrupt 3
-#define UART_IR_Num interrupt 4
-#define WDT_IR_Num interrupt  5
-#define PWM0_IR_Num interrupt 6
-#define PWM1_IR_Num interrupt 7
-#define TIMER2_IR_Num interrupt 8
-#define ADC_IR_Num interrupt 9
-#define LIN_IR_Num interrupt 12
-#define CMP_IR_Num interrupt 14
-#define SPI_IR_Num interrupt 17
-#define I2C_IR_Num interrupt 19
+#define EXINT_ISR_Num interrupt 0
+#define TIMER0_ISR_Num interrupt 1
+#define TIMER1_ISR_Num interrupt 3
+#define UART_ISR_Num interrupt 4
+#define WDT_ISR_Num interrupt  5
+#define PWM0_ISR_Num interrupt 6
+#define PWM1_ISR_Num interrupt 7
+#define TIMER2_ISR_Num interrupt 8
+#define ADC_ISR_Num interrupt 9
+#define LIN_ISR_Num interrupt 12
+#define CMP_ISR_Num interrupt 14
+#define SPI_ISR_Num interrupt 17
+#define I2C_ISR_Num interrupt 19
 #endif

@@ -3,13 +3,12 @@
 #include "common.h"
 #include "protect.h"
 /*****************************************************************************
-函 数 名  	       : Timer0_Init
+函 数 名  	: Timer0_Init
 功能描述  	: TIMER0初始化
 输入参数  	: null
 输出参数  	: null
-返 回 值 		: null
+返 回 值 	: null
 *****************************************************************************/
-
 void Timer0_Init()
 {
     SFRPAGE = 0x00;
@@ -26,11 +25,17 @@ void Timer0_Init()
     TL0 = 0x00;  // 低8位
     TH0 = 0x00;  // 高8位
 }
-
+/*****************************************************************************
+函 数 名  	: Timer0_Init
+功能描述  	: TIMER0初始化
+输入参数  	: null
+输出参数  	: null
+返 回 值 	: null
+*****************************************************************************/
 void Timer2_Init()
 {
     SFRPAGE = 0x00;
-    T2CON |= BIT0;  // 16bit定时器
+    T2CON |= BIT0;  //16bit定时器
     T2PSC &= BIT0F; //清除第0位
     T2PSC &= BIT1F; //清除第1位
 #if (TIMERFREQUENCY == 8)
@@ -51,7 +56,7 @@ void Timer2_Init()
  输入参数  : 无
  输出参数  : void
 **************************************************************/
-void Timer2_ISR() interrupt 8
+void Timer2_ISR() TIMER2_ISR_Num
 {
     TIMER2_RESET;
     if (Halless.zero_flag)
