@@ -18,7 +18,7 @@ void PID_init(void)
     pi_spd.Out = 0;
     pi_spd.OutMax = 5;
     pi_spd.OutMin = -pi_spd.OutMax;
-    // pi_spd.UMAX = 60000;
+    // pi_spd.UiMAX = 60000;
 }
 void PID_CLAC(PIDREG_T *PID)
 {
@@ -26,7 +26,7 @@ void PID_CLAC(PIDREG_T *PID)
     PID->Err_sum += PID->Err;
     PID->Up = PID->Kp * PID->Err;
     PID->Ui = PID->Ki * PID->Err_sum;
-    // UP16LIMIT(PID->Err_sum, PID->UMAX, PID->Ui);
+    // UP16LIMIT(PID->Err_sum, PID->UiMAX, PID->Ui);
     PID->Ud = PID->Kd * (PID->Err - PID->L_Err);
     PID->Out = PID->Up + PID->Ui + PID->Ud;
     UP16LIMIT(PID->Out, PID->OutMax, PID->OutMin);

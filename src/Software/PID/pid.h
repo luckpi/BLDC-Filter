@@ -2,7 +2,7 @@
 #define _PID_H
 #include "common.h"
 #include "typedef.h"
-#define Speed_Kp 0.03f
+#define Speed_Kp 0.01f
 #define Speed_Ki 0
 #define Speed_Kd 0
 typedef struct
