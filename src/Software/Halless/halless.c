@@ -7,10 +7,10 @@
 #include "control.h"
 /*AND & OR operators for masking the active BEMF signal*/
 /*与运算只获取当前要检测反电动势的状态， 通过异或检测当前反电动势变化情况*/
-const u8 xdata ADC_MASK[16] = {0x00, 0x04, 0x02, 0x01, 0x04, 0x02, 0x01, 0x00,  //正转
-                               0x00, 0x04, 0x01, 0x02, 0x04, 0x01, 0x02, 0x00}; //反转
-const u8 xdata ADC_XOR[16] = {0x00, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00,   //正转
-                              0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0x00};  //反转
+const u8 xdata ADC_MASK[2][8] = {0x00, 0x04, 0x02, 0x01, 0x04, 0x02, 0x01, 0x00,  //正转
+                                 0x00, 0x04, 0x01, 0x02, 0x04, 0x01, 0x02, 0x00}; //反转
+const u8 xdata ADC_XOR[2][8] = {0x00, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00,   //正转
+                                0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0x00};  //反转
 /*BEMF Majority Function Filter values*/
 /*通过检测多次，当捕获到三个反电动势边沿变化中，有两个有效信号则滤波完成*/
 const u8 xdata ADC_BEMF_FILTER[64] =
@@ -82,12 +82,7 @@ void CheckZeroCrossing()
             Halless.HallessState |= 0x02;
         if (ADCSample.WBemf > ADCSample.NeutralPoint) // W相输出
             Halless.HallessState |= 0x04;
-        if (HoldParm.RotorDirection == CW) // 切换正反转处理
-            Num = Halless.Phase;
-        else
-            Num = Halless.Phase + 8;
-
-        if ((Halless.HallessState ^ ADC_XOR[Num]) & ADC_MASK[Num]) // 获取当前要检测反电动势变化
+        if ((Halless.HallessState ^ ADC_XOR[HoldParm.RotorDirection][Halless.Phase]) & ADC_MASK[HoldParm.RotorDirection][Halless.Phase]) // 获取当前要检测反电动势变化
         {
             Halless.BackEMFFilter |= 0x01;
         }

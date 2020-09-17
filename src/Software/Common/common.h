@@ -1,8 +1,8 @@
 #ifndef _COMMON_H
 #define _COMMON_H
 #include "typedef.h"
-#define CW BIT0
-#define CCW BIT1
+#define CW 0
+#define CCW 1
 #define First_Gear 1000  // 一档
 #define Second_Gear 2000 // 二档
 #define Third_Gear 2400  // 三档
