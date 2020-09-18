@@ -18,7 +18,7 @@
 **************************************************************************************************/
 static void MotorAhead()
 {
-    Ps("\nStart", NONE);
+    Ps("\nStart\n", NONE);
     PWMPortShut();
     Fault_InitOverUnderVoltage(); // 过压保护
     mcState = mcInit;
@@ -31,7 +31,6 @@ static void MotorAhead()
 **************************************************************************************************/
 static void MotorInit()
 {
-    PWMPortShut();
     Common_Init();
     TOTAL_INT_DISEN;
     ALL_INT_DISEN;

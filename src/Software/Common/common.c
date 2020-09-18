@@ -21,10 +21,9 @@ void PowerupParaInit()
     SPIIE = 0x00;  //保证重启后晶振频率一致
     JTAGEN = 0x00; // 使用PB4、PB5、PB6需配置该寄存器
     PWMPortShut();
-    Common_Init();
-    HoldParm.RotorDirection = CW;
     mcState = mcAhead;
     error_code = normal;
+    HoldParm.RotorDirection = CW;
 }
 /*****************************************************************************
  函 数 名  : Common_Init

@@ -17,7 +17,6 @@ void main()
     Port_Init();
     WDT_Init();
     Interrupt_Init();
-    Common_Init();
     UART_Init();
     PWM_Init();
     ADC_Init();
