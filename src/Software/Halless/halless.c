@@ -70,7 +70,6 @@ static void CalcSpeedTime()
 *****************************************************************************/
 void CheckZeroCrossing()
 {
-    u8 Num = 0;
     if (++Halless.Filter_Count >= Halless.Filter_Times)
     {
         Halless.HallessState = 0;
