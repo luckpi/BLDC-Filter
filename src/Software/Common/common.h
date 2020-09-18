@@ -54,7 +54,6 @@ typedef struct
 {
     u8 ChlState;       // 通道状态
     u16 CurrentOffset; // 电流放大零点
-    u8 ZeroChl;        // 过零点通道
     u16 Voltage;       // 电压采样值
     u16 Current;       // 电流采样值
     u16 UBemf;         // 反电动势U相
