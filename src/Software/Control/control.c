@@ -85,7 +85,7 @@ void StartupDrag()
         Halless.zero_flag = 0; //此处用作标识位
         if (++CNT > 12)
         {
-            CNT = 20;
+            CNT = 0;
             EnterRunInit();
             return;
         }

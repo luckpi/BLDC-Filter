@@ -30,8 +30,8 @@ void main()
         switch (mcState)
         {
         case mcRun:
-            if (ADCSample.Voltage)
-                Protect_Voltage();
+            // if (ADCSample.Voltage)
+            Protect_Voltage();
             // Ps("BAT=", ADCSample.Voltage);
             // Ps("Current = ", ADCSample.Average);
             Protect_Current();

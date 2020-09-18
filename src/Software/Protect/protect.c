@@ -13,11 +13,10 @@
 ********************************************************************************************************/
 void Fault_InitOverUnderVoltage()
 {
-    u16 VoltageValue = 0;
     while (1)
     {
-        VoltageValue = GetVoltageValue();
-        if (VoltageValue < OVER_VOLTAGE_PROTECT && VoltageValue > UNDER_VOLTAGE_PROTECT)
+        ADCSample.Voltage= GetVoltageValue();
+        if (ADCSample.Voltage < OVER_VOLTAGE_PROTECT && ADCSample.Voltage > UNDER_VOLTAGE_PROTECT)
         {
             if (++ADCSample.OverVoltageCnt >= 64)
             {
@@ -27,7 +26,7 @@ void Fault_InitOverUnderVoltage()
         }
         else
         {
-            if (VoltageValue > OVER_VOLTAGE_PROTECT)
+            if (ADCSample.Voltage > OVER_VOLTAGE_PROTECT)
                 error_code = overvoltage;
             else
                 error_code = undervoltage;

@@ -3,7 +3,7 @@
 #include "typedef.h"
 #define CW 0
 #define CCW 1
-#define First_Gear 1000  // 一档
+#define First_Gear 1750  // 一档
 #define Second_Gear 2000 // 二档
 #define Third_Gear 2400  // 三档
 
