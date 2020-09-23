@@ -20,7 +20,7 @@ static void position() // 获取位置失败，强行定位
 	PWMChangeDuty(HoldParm.PWMDutyCycle);
 	PWMOutput();
 	PWMSwitchPhase();
-	Delay_ms(100);
+	Delay_ms(200);
 	PWMPortShut();
 	Delay_us(50);
 }
@@ -136,27 +136,27 @@ void IPD()
 		{
 		case 5:
 			// Ps("5", NONE);
-			Halless.Phase = 5;
+			Halless.Phase = 6;
 			break;
 		case 1:
 			// Ps("1", NONE);
-			Halless.Phase = 4;
+			Halless.Phase = 5;
 			break;
 		case 3:
 			// Ps("3", NONE);
-			Halless.Phase = 3;
+			Halless.Phase = 4;
 			break;
 		case 2:
 			// Ps("2", NONE);
-			Halless.Phase = 2;
+			Halless.Phase = 3;
 			break;
 		case 6:
 			// Ps("6", NONE);
-			Halless.Phase = 1;
+			Halless.Phase = 2;
 			break;
 		case 4:
 			// Ps("4", NONE);
-			Halless.Phase = 0;
+			Halless.Phase = 1;
 			break;
 		default:
 			position();
@@ -169,27 +169,27 @@ void IPD()
 		{
 		case 5:
 			// Ps("5", NONE);
-			Halless.Phase = 0;
+			Halless.Phase = 1;
 			break;
 		case 1:
 			// Ps("1", NONE);
-			Halless.Phase = 1;
+			Halless.Phase = 2;
 			break;
 		case 3:
 			// Ps("3", NONE);
-			Halless.Phase = 2;
+			Halless.Phase = 3;
 			break;
 		case 2:
 			// Ps("2", NONE);
-			Halless.Phase = 3;
+			Halless.Phase = 4;
 			break;
 		case 6:
 			// Ps("6", NONE);
-			Halless.Phase = 4;
+			Halless.Phase = 5;
 			break;
 		case 4:
 			// Ps("4", NONE);
-			Halless.Phase = 5;
+			Halless.Phase = 6;
 			break;
 		default:
 			position();

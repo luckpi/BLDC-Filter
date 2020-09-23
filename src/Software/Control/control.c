@@ -56,7 +56,7 @@ static void MotorAlign()
     // Delay_ms(100);
     // PWMPortShut();
     // Delay_us(50);
-    IPD();
+    IPD(); // 定位需要根据电机调整
     PWMOutput();
     SFRPAGE = 0x02; // 中断标志清零
     EXINTCON = 0x00;
@@ -81,24 +81,24 @@ void StartupDrag()
     ADC_CNT++;
     if (Halless.zero_flag)
     {
+        ADC_CNT = 0;
         Halless.zero_flag = 0; //此处用作标识位
-        if (++CNT > 12)
+        PWMSwitchPhase();
+        if (++CNT > 48)// 需要调整切入闭环的时间
         {
             CNT = 0;
             EnterRunInit();
             return;
         }
-        PWMSwitchPhase();
-        ADC_CNT = 0;
     }
-    else if (ADC_CNT >= HoldParm.DragTime)
+    else if (ADC_CNT >= HoldParm.DragTime) // 需要调整强拖时间
     {
         ADC_CNT = 0;
         CNT = 0;
-        HoldParm.DragTime -= ((HoldParm.DragTime / 15) + 1);
-        if (HoldParm.DragTime < 175)
+        HoldParm.DragTime -= ((HoldParm.DragTime / 100) + 1); // 需要调整强拖加速
+        if (HoldParm.DragTime < 100)
         {
-            HoldParm.DragTime = 175;
+            HoldParm.DragTime = 100;
         }
         if (++Halless.Phase > 6)
             Halless.Phase = 1;
@@ -124,9 +124,6 @@ void StartupDrag()
 *****************************************************************************/
 void EnterRunInit()
 {
-    if (++Halless.Phase > 6)
-        Halless.Phase = 1;
-    PWMSwitchPhase();
     TIMER0_START;
     TIMER2_START;
     mcState = mcRun;

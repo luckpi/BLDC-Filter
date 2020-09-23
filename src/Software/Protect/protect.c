@@ -6,8 +6,8 @@
 #include "common.h"
 #include "debug.h"
 /********************************************************************************************************
- 函 数 名  : Fault_OverVoltage
- 功能描述  : 过压保护函数
+ 函 数 名  : Fault_InitOverUnderVoltage
+ 功能描述  : 初始化电压保护函数
  输入参数  : 无
  输出参数  : void
 ********************************************************************************************************/
@@ -15,7 +15,7 @@ void Fault_InitOverUnderVoltage()
 {
     while (1)
     {
-        ADCSample.Voltage= GetVoltageValue();
+        ADCSample.Voltage = GetVoltageValue();
         if (ADCSample.Voltage < OVER_VOLTAGE_PROTECT && ADCSample.Voltage > UNDER_VOLTAGE_PROTECT)
         {
             if (++ADCSample.OverVoltageCnt >= 64)
@@ -37,7 +37,7 @@ void Fault_InitOverUnderVoltage()
 }
 /********************************************************************************************************
  函 数 名  : Protect_Voltage
- 功能描述  : 过压保护函数
+ 功能描述  : 电压保护函数
  输入参数  : 无
  输出参数  : void
 ********************************************************************************************************/
@@ -56,7 +56,12 @@ void Protect_Voltage()
         ADCSample.OverVoltageCnt = 0;
     }
 }
-
+/********************************************************************************************************
+ 函 数 名  : Protect_Current
+ 功能描述  : 电流保护函数
+ 输入参数  : 无
+ 输出参数  : void
+********************************************************************************************************/
 void Protect_Current()
 {
     if (ADCSample.Average > 50)
