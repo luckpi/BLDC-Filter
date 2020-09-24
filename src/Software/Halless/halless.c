@@ -5,13 +5,13 @@
 #include "uart.h"
 #include "adc.h"
 #include "control.h"
-/*AND & OR operators for masking the active BEMF signal*/
+/*AND & OR 用于屏蔽有效BEMF信号的运算符*/
 /*与运算只获取当前要检测反电动势的状态， 通过异或检测当前反电动势变化情况*/
 const u8 xdata ADC_MASK[2][8] = {0x00, 0x04, 0x02, 0x01, 0x04, 0x02, 0x01, 0x00,  //正转
                                  0x00, 0x04, 0x01, 0x02, 0x04, 0x01, 0x02, 0x00}; //反转
 const u8 xdata ADC_XOR[2][8] = {0x00, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00,   //正转
                                 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0x00};  //反转
-/*BEMF Majority Function Filter values*/
+/*BEMF 择多函数滤波*/
 /*通过检测多次，当捕获到三个反电动势边沿变化中，有两个有效信号则滤波完成*/
 const u8 xdata ADC_BEMF_FILTER[64] =
     // 0    1    2    3      4     5     6     7     8     9     10    11    12    13    14    15
