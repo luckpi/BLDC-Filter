@@ -76,11 +76,17 @@ void CheckZeroCrossing()
         ADCSample.NeutralPoint = (ADCSample.UBemf + ADCSample.VBemf + ADCSample.WBemf) / 3; // 反电动势虚拟中心点
 
         if (ADCSample.UBemf > ADCSample.NeutralPoint) // U相输出
+        {
             Halless.HallessState |= 0x01;
+        }
         if (ADCSample.VBemf > ADCSample.NeutralPoint) // V相输出
+        {
             Halless.HallessState |= 0x02;
+        }
         if (ADCSample.WBemf > ADCSample.NeutralPoint) // W相输出
+        {
             Halless.HallessState |= 0x04;
+        }
         if ((Halless.HallessState ^ ADC_XOR[HoldParm.RotorDirection][Halless.Phase]) & ADC_MASK[HoldParm.RotorDirection][Halless.Phase]) // 获取当前要检测反电动势变化
         {
             Halless.BackEMFFilter |= 0x01;

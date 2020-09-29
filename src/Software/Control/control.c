@@ -51,12 +51,12 @@ static void MotorAlign()
 {
     HoldParm.PWMDutyCycle = PWM_START_DUTY;
     PWMChangeDuty(HoldParm.PWMDutyCycle);
-    // PWMOutput();
-    // PWMSwitchPhase();
-    // Delay_ms(100);
-    // PWMPortShut();
-    // Delay_us(50);
-    IPD(); // 定位需要根据电机调整
+    PWMOutput();
+    PWMSwitchPhase();
+    Delay_ms(100);
+    PWMPortShut();
+    Delay_us(50);
+    // IPD(); // 定位需要根据电机调整
     PWMOutput();
     SFRPAGE = 0x02; // 中断标志清零
     EXINTCON = 0x00;
@@ -84,7 +84,7 @@ void StartupDrag()
         ADC_CNT = 0;
         Halless.zero_flag = 0; //此处用作标识位
         PWMSwitchPhase();
-        if (++CNT > 48)// 需要调整切入闭环的时间
+        if (++CNT > 48) // 需要调整切入闭环的时间
         {
             CNT = 0;
             EnterRunInit();
@@ -96,25 +96,27 @@ void StartupDrag()
         ADC_CNT = 0;
         CNT = 0;
         HoldParm.DragTime -= ((HoldParm.DragTime / 100) + 1); // 需要调整强拖加速
-        if (HoldParm.DragTime < 100)
+        if (HoldParm.DragTime < 300)
         {
-            HoldParm.DragTime = 100;
+            HoldParm.DragTime = 300;
         }
         if (++Halless.Phase > 6)
+        {
             Halless.Phase = 1;
+        }
         PWMSwitchPhase();
         Halless.Filter_Count = 0;
         HoldParm.PWMDutyCycle += 1;
+        if (HoldParm.PWMDutyCycle < PWM_START_DUTY) // 限制输出占空比的最大最小值
+        {
+            HoldParm.PWMDutyCycle = PWM_START_DUTY;
+        }
+        else if (HoldParm.PWMDutyCycle > PWM_DUTYCYCLE_20)
+        {
+            HoldParm.PWMDutyCycle = PWM_DUTYCYCLE_20;
+        }
+        PWMChangeDuty(HoldParm.PWMDutyCycle);
     }
-    if (HoldParm.PWMDutyCycle < PWM_START_DUTY) // 限制输出占空比的最大最小值
-    {
-        HoldParm.PWMDutyCycle = PWM_START_DUTY;
-    }
-    else if (HoldParm.PWMDutyCycle > PWM_DUTYCYCLE_20)
-    {
-        HoldParm.PWMDutyCycle = PWM_DUTYCYCLE_20;
-    }
-    PWMChangeDuty(HoldParm.PWMDutyCycle);
 }
 /*****************************************************************************
  函 数 名  : EnterRunInit
