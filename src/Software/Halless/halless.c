@@ -57,9 +57,6 @@ static void CalcSpeedTime()
     Halless.delay_time = 65535 - (HoldParm.SpeedTimeTemp >> 1 - 100); // 换相延迟
     TH2 = Halless.delay_time >> 8;
     TL2 = Halless.delay_time & 0xff;
-    Halless.Filter_Count = 0;
-    Halless.BackEMFFilter = 0;
-    Halless.zero_flag = 1;
     CalcAvgSpeedTime();
 }
 /*****************************************************************************
@@ -98,7 +95,11 @@ void CheckZeroCrossing()
             {
                 Halless.Phase = 1;
             }
-            CalcSpeedTime();
+            Halless.zero_flag = 1;
+            Halless.Filter_Count = 0;
+            Halless.BackEMFFilter = 0;
+            if (mcState == mcRun)
+                CalcSpeedTime();
         }
     }
 }

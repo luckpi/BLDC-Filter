@@ -55,7 +55,7 @@ static void MotorAlign()
     PWMSwitchPhase();
     Delay_ms(100);
     PWMPortShut();
-    Delay_us(50);
+    Delay_us(100);
     // IPD(); // 定位需要根据电机调整
     PWMOutput();
     SFRPAGE = 0x02; // 中断标志清零
@@ -107,14 +107,7 @@ void StartupDrag()
         PWMSwitchPhase();
         Halless.Filter_Count = 0;
         HoldParm.PWMDutyCycle += 1;
-        if (HoldParm.PWMDutyCycle < PWM_START_DUTY) // 限制输出占空比的最大最小值
-        {
-            HoldParm.PWMDutyCycle = PWM_START_DUTY;
-        }
-        else if (HoldParm.PWMDutyCycle > PWM_DUTYCYCLE_20)
-        {
-            HoldParm.PWMDutyCycle = PWM_DUTYCYCLE_20;
-        }
+        UP16LIMIT(HoldParm.PWMDutyCycle, PWM_DUTYCYCLE_20, PWM_START_DUTY);
         PWMChangeDuty(HoldParm.PWMDutyCycle);
     }
 }
