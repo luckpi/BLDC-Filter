@@ -54,7 +54,7 @@ static void CalcSpeedTime()
     SFRPAGE = 0x00;
     HoldParm.SpeedTimeTemp = (TH0 << 8) + TL0; // 获取换相间隔时间
     TIMER0_RESET;
-    Halless.delay_time = 65535 - (HoldParm.SpeedTimeTemp >> 1 - 100); // 换相延迟
+    Halless.delay_time = 65535 - (HoldParm.SpeedTimeTemp >> 1 - 400); // 换相延迟
     TH2 = Halless.delay_time >> 8;
     TL2 = Halless.delay_time & 0xff;
     CalcAvgSpeedTime();
