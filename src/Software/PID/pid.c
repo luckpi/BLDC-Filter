@@ -1,33 +1,34 @@
 #include "pid.h"
 #include "pwm.h"
 #include "common.h"
-PIDREG_T xdata pi_spd;
+PIDREG_T xdata PI;
 void PID_init(void)
 {
-    pi_spd.Kp = Speed_Kp;
-    pi_spd.Ki = Speed_Ki;
-    pi_spd.Kd = Speed_Kd;
-    pi_spd.Up = 0;
-    pi_spd.Ui = 0;
-    pi_spd.Ud = 0;
-    pi_spd.Fdb = 0;
-    pi_spd.Ref = HoldParm.Set_RPM;
-    pi_spd.Err = 0;
-    pi_spd.L_Err = 0;
-    pi_spd.Err_sum = 0;
-    pi_spd.Out = 0;
-    pi_spd.OutMax = 5;
-    pi_spd.OutMin = -pi_spd.OutMax;
-    // pi_spd.UiMAX = 60000;
+    PI.InRef = HoldParm.Set_RPM;
+    PI.FB = 0;
+    PI.Kp = Speed_Kp;
+    PI.Ki = Speed_Ki;
+    PI.Kc = Speed_Kc; // 与Excess相乘系数
+    PI.Err = 0;
+    PI.Outmax = 5;
+    PI.Outmin = -PI.Outmax;
+    PI.Excess = 0; // 抑制积分过饱和
+    PI.Err_Sum = 0;
+    PI.U = 0; // 无限输出
+    PI.Out = 0;
 }
-void PID_CLAC(PIDREG_T *PID)
+void PID_CLAC(PIDREG_T *PI)
 {
-    PID->Err = PID->Ref - PID->Fdb;
-    PID->Err_sum += PID->Err;
-    PID->Up = PID->Kp * PID->Err;
-    PID->Ui = PID->Ki * PID->Err_sum;
-    // UP16LIMIT(PID->Err_sum, PID->UiMAX, PID->Ui);
-    PID->Ud = PID->Kd * (PID->Err - PID->L_Err);
-    PID->Out = PID->Up + PID->Ui + PID->Ud;
-    UP16LIMIT(PID->Out, PID->OutMax, PID->OutMin);
+    PI->Err = PI->InRef - PI->FB;
+    PI->U = PI->Err_Sum + PI->Kp * PI->Err;
+
+    if (PI->U > PI->Outmax)
+        PI->Out = PI->Outmax;
+    else if (PI->U < PI->Outmin)
+        PI->Out = PI->Outmin;
+    else
+        PI->Out = PI->U;
+
+    PI->Excess = PI->U - PI->Out;
+    PI->Err_Sum += (PI->Ki * PI->Err) - (PI->Kc * PI->Excess);
 }

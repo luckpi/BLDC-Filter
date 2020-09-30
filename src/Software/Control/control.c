@@ -134,9 +134,9 @@ static void MotorRun()
     if (HoldParm.SpeedLoopCnt > 100)
     {
         HoldParm.SpeedLoopCnt = 0;
-        pi_spd.Fdb = HoldParm.RPM;
-        PID_CLAC(&pi_spd);
-        HoldParm.PWMDutyCycle += pi_spd.Out;
+        PI.FB = HoldParm.RPM;
+        PID_CLAC(&PI);
+        HoldParm.PWMDutyCycle += PI.Out;
         UP16LIMIT(HoldParm.PWMDutyCycle, PWM_DUTYCYCLE_50, PWM_START_DUTY);
         PWMChangeDuty(HoldParm.PWMDutyCycle);
         Ps("RPM=", HoldParm.RPM);
